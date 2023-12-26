@@ -1,6 +1,7 @@
 import { CssBaseline } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -12,9 +13,11 @@ export const AppProviders: React.FC<Props> = ({ children }) => {
       <Provider store={store}>
         <BrowserRouter>
           <SnackbarProvider>
-            <CssBaseline enableColorScheme />
+            <HelmetProvider>
+              <CssBaseline enableColorScheme />
 
-            {children}
+              {children}
+            </HelmetProvider>
           </SnackbarProvider>
         </BrowserRouter>
       </Provider>
