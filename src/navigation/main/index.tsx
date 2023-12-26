@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useSearchParams } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ import { QUERY_SEARCH_PARAM } from 'constants/routes';
 
 import Item from './components/item';
 import SearchBar from './components/search-bar';
+import SEO from 'components/seo';
 
 const useStyles = createUseStyles({
   mainPageCt: {
@@ -31,7 +32,6 @@ const MainPage: React.FC = () => {
   const classes = useStyles();
   const [searchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<PokemonShort[]>([]);
-  const observerTarget = useRef(null);
   const { data: list, isFetching } = usePokemons();
 
   const isSearching = !isFetching && list?.results.length;
@@ -66,7 +66,11 @@ const MainPage: React.FC = () => {
 
       {isSearching && !searchResults.length && <Typography variant='h5'>No matching results</Typography>}
 
-      <div ref={observerTarget} />
+      <SEO
+        title={`Pokémons page`}
+        description={`Find Pokémons and familiarize yourself with their skills, abilities and other characteristics.`}
+        type='article'
+      />
     </div>
   );
 };

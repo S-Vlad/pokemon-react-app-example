@@ -1,7 +1,6 @@
 import { Typography, Button, useMediaQuery } from '@mui/material';
 
 import classNames from 'classnames';
-import { createUseStyles } from 'react-jss';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { usePokemonDetails } from 'api/get-pokemon-details';
@@ -9,124 +8,24 @@ import NotFound from 'navigation/not-found';
 
 import FetchOverlay from 'components/fetch-overlay';
 import PaddingWrapper from 'components/padding-wrapper';
-import { MEDIA_QUERIES } from 'constants/media-queries';
+import SEO from 'components/seo';
 
 import PokemonStats from './components/stats';
-
-const useStyles = createUseStyles({
-  avatarCt: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  avatar: {
-    width: '100%',
-    objectFit: 'contain',
-    maxHeight: 420,
-    maxWidth: 420,
-  },
-  typesCt: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    display: 'flex',
-    flexWrap: 'wrap',
-    columnGap: 5,
-    rowGap: 5,
-  },
-  type: {
-    padding: 5,
-    borderRadius: 5,
-    color: '#fff',
-    fontWeight: 700,
-    outline: '1px solid white',
-    textTransform: 'capitalize',
-
-    '&.poison': {
-      backgroundColor: '#a040a0',
-    },
-    '&.normal': {
-      backgroundColor: '#a8a878',
-    },
-    '&.grass': {
-      backgroundColor: '#78c850',
-    },
-    '&.ground': {
-      backgroundColor: '#e0c068',
-    },
-    '&.fighting': {
-      backgroundColor: '#c03028',
-    },
-    '&.rock': {
-      backgroundColor: '#b8a038',
-    },
-    '&.steel': {
-      backgroundColor: '#b8b8d0',
-    },
-    '&.fire': {
-      backgroundColor: '#f08030',
-    },
-    '&.electric': {
-      backgroundColor: '#f8d030',
-    },
-    '&.flying': {
-      backgroundColor: '#a890f0',
-    },
-    '&.psychic': {
-      backgroundColor: '#f85888',
-    },
-    '&.bug': {
-      backgroundColor: '#a8b820',
-    },
-    '&.dragon': {
-      backgroundColor: '#7038f8',
-    },
-    '&.water': {
-      backgroundColor: '#6890f0',
-    },
-    '&.ice': {
-      backgroundColor: '#98d8d8',
-    },
-    '&.dark': {
-      backgroundColor: '#705848',
-    },
-    '&.ghost': {
-      backgroundColor: '#705898',
-    },
-    '&.fairy': {
-      backgroundColor: '#ffaec9',
-    },
-  },
-  description: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    rowGap: 32,
-    marginTop: 32,
-    width: '100%',
-
-    [MEDIA_QUERIES.min768]: {
-      display: 'flex',
-      flexDirection: 'row',
-      rowGap: 0,
-      columnGap: 32,
-    },
-  },
-});
+import { useStyles } from './components/styles';
 
 const PokemonDetails: React.FC = () => {
   const classes = useStyles();
   const { name } = useParams();
   const navigate = useNavigate();
   const isLessThen768 = useMediaQuery('(max-width:768px)');
-  const { data, isFetching } = usePokemonDetails(name as string);
+  const { data, isFetching, isLoading } = usePokemonDetails(name as string);
 
   if (isFetching) {
     return <FetchOverlay isFetching />;
   }
 
-  if (!isFetching && !data) {
+  // is loading first time
+  if (!isLoading && !data) {
     return <NotFound />;
   }
 
@@ -135,6 +34,7 @@ const PokemonDetails: React.FC = () => {
   }
 
   const handleBackClick = () => navigate(-1);
+  let pokemonName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
 
   const renderTypes = () => (
     <div className={classes.typesCt}>
@@ -179,6 +79,12 @@ const PokemonDetails: React.FC = () => {
 
         <PokemonStats stats={data.stats} />
       </div>
+
+      <SEO
+        title={`${pokemonName} Pokémon page`}
+        description={`This is ${pokemonName} personal page, where you can learn about Pokémon stats, abilities, and other information.`}
+        type='article'
+      />
     </PaddingWrapper>
   );
 };
