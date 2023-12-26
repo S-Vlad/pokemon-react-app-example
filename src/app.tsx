@@ -1,4 +1,4 @@
-import { CssBaseline } from '@mui/material';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Route, Routes } from 'react-router-dom';
 
 import SnackBarManager from 'components/snack-bar-manager';
@@ -13,14 +13,14 @@ import './app.css';
 function App() {
   return (
     <>
-      <CssBaseline enableColorScheme />
       <SnackBarManager />
+      <ReactQueryDevtools initialIsOpen={false} />
 
       <main>
         <Routes>
           <Route path={MAIN} element={<MainPage />} />
           <Route path={`${POKEMON_DETAILS}/:name`} element={<PokemonDetails />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </main>
     </>

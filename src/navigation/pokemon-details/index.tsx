@@ -1,14 +1,15 @@
 import { Typography, Button, useMediaQuery } from '@mui/material';
+
 import classNames from 'classnames';
-import { useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { usePokemonDetails } from 'api/get-pokemon-details';
+import NotFound from 'navigation/not-found';
 
 import FetchOverlay from 'components/fetch-overlay';
 import PaddingWrapper from 'components/padding-wrapper';
 import { MEDIA_QUERIES } from 'constants/media-queries';
-import { useAppDispatch, useAppSelector } from 'hooks/index';
-import { fetchPokemonDetails } from 'store/pokemons/thunks/fetch-pokemon-details';
 
 import PokemonStats from './components/stats';
 
@@ -116,33 +117,28 @@ const useStyles = createUseStyles({
 
 const PokemonDetails: React.FC = () => {
   const classes = useStyles();
-  const dispatch = useAppDispatch();
-
   const { name } = useParams();
   const navigate = useNavigate();
   const isLessThen768 = useMediaQuery('(max-width:768px)');
+  const { data, isFetching } = usePokemonDetails(name as string);
 
-  const { charsByName } = useAppSelector((s) => s.pokemons);
-
-  const currentChar = charsByName[name as string];
-
-  useEffect(() => {
-    if (!currentChar) {
-      const promise = dispatch(fetchPokemonDetails(name as string));
-
-      return () => promise.abort();
-    }
-  }, [currentChar, name]);
-
-  if (!currentChar) {
+  if (isFetching) {
     return <FetchOverlay isFetching />;
+  }
+
+  if (!isFetching && !data) {
+    return <NotFound />;
+  }
+
+  if (!data) {
+    return null;
   }
 
   const handleBackClick = () => navigate(-1);
 
   const renderTypes = () => (
     <div className={classes.typesCt}>
-      {currentChar.types.map((type) => (
+      {data.types.map((type) => (
         <div key={type} className={classNames(classes.type, type)}>
           {type}
         </div>
@@ -151,37 +147,37 @@ const PokemonDetails: React.FC = () => {
   );
 
   return (
-    <PaddingWrapper WrapperComponent="article">
+    <PaddingWrapper WrapperComponent='article'>
       <Button onClick={handleBackClick} sx={{ position: isLessThen768 ? 'relative' : 'absolute' }}>
         Back
       </Button>
 
       <Typography
-        variant="h1"
-        component="h1"
+        variant='h1'
+        component='h1'
         sx={{
           ...(isLessThen768 && { fontSize: '56px' }),
           textAlign: 'center',
           textTransform: 'capitalize',
         }}
       >
-        {currentChar.name}
+        {data.name}
       </Typography>
 
       <div className={classes.description}>
         <div>
           <div className={classes.avatarCt}>
-            <img className={classes.avatar} src={currentChar.sprites.front_default} />
+            <img className={classes.avatar} src={data.sprites.front_default} />
 
             {renderTypes()}
           </div>
 
-          <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>
-            Height: {currentChar.height}, Weight: {currentChar.weight}
+          <Typography variant='h6' component='div' sx={{ marginTop: 2 }}>
+            Height: {data.height}, Weight: {data.weight}
           </Typography>
         </div>
 
-        <PokemonStats stats={currentChar.stats} />
+        <PokemonStats stats={data.stats} />
       </div>
     </PaddingWrapper>
   );

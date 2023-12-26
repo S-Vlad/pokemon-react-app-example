@@ -1,5 +1,5 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { Pokemon } from 'api/types/pokemon';
+import { Pokemon } from 'api/types';
 
 const HEADER_TITLES = ['Base', 'Stats'];
 const BODY_TITLES = ['HP', 'Attack', 'Defense', 'Sp.Attack', 'Sp.Defense', 'Speed'];
@@ -24,7 +24,7 @@ const PokemonStats: React.FC<Props> = ({ stats }) => {
 
   return (
     <TableContainer component={Paper} sx={{ maxWidth: '360px' }}>
-      <Table aria-label="stats table">
+      <Table aria-label='stats table'>
         <TableHead>{renderHead()}</TableHead>
         <TableBody>{renderBody()}</TableBody>
       </Table>
