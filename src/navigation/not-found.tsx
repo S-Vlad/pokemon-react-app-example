@@ -15,13 +15,13 @@ const useStyles = createUseStyles({
   },
 });
 
-const NotFount = () => {
+const NotFound = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   return (
     <PaddingWrapper wrapperClassName={classes.notFoundCt}>
-      <Typography variant="h2" component="h1">
+      <Typography variant='h2' component='h1'>
         Page not found
       </Typography>
       <Button onClick={() => navigate(MAIN)}>Nav to main</Button>
@@ -29,4 +29,4 @@ const NotFount = () => {
   );
 };
 
-export default NotFount;
+export default NotFound;

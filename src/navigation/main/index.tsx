@@ -3,12 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useSearchParams } from 'react-router-dom';
 
-import { PokemonShort } from 'api/types/pokemon';
+import { usePokemons } from 'api/get-pokemons';
+import { PokemonShort } from 'api/types';
 import FetchOverlay from 'components/fetch-overlay';
 import { QUERY_SEARCH_PARAM } from 'constants/routes';
-import { useAppDispatch, useAppSelector } from 'hooks/index';
-import { POKEMONS_LOADING_KEY } from 'store/pokemons/extra-reducers/add-fetch-pokemons';
-import { fetchPokemons } from 'store/pokemons/thunks/fetch-pokemons';
 
 import Item from './components/item';
 import SearchBar from './components/search-bar';
@@ -31,31 +29,24 @@ const useStyles = createUseStyles({
 
 const MainPage: React.FC = () => {
   const classes = useStyles();
-  const dispatch = useAppDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const { list, loadingKeys } = useAppSelector((s) => s.pokemons);
-
+  const [searchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<PokemonShort[]>([]);
-
   const observerTarget = useRef(null);
+  const { data: list, isFetching } = usePokemons();
 
-  const isLoading = loadingKeys.includes(POKEMONS_LOADING_KEY);
-  const isSearching = searchResults.length < list.length;
+  const isSearching = !isFetching && list?.results.length;
   const query = searchParams.get(QUERY_SEARCH_PARAM);
 
   useEffect(() => {
-    const promise = dispatch(fetchPokemons());
+    if (!list) {
+      return;
+    }
 
-    return () => promise.abort();
-  }, []);
-
-  useEffect(() => {
     if (query) {
-      const resultItems = list.filter((i) => i.name.includes(query));
+      const resultItems = list.results.filter((i) => i.name.includes(query));
       setSearchResults(resultItems);
     } else {
-      setSearchResults(list);
+      setSearchResults(list.results);
     }
   }, [list, query]);
 
@@ -71,9 +62,9 @@ const MainPage: React.FC = () => {
         </div>
       ) : null}
 
-      <FetchOverlay isFetching={isLoading} />
+      <FetchOverlay isFetching={isFetching} />
 
-      {isSearching && !searchResults.length && <Typography variant="h5">No matching results</Typography>}
+      {isSearching && !searchResults.length && <Typography variant='h5'>No matching results</Typography>}
 
       <div ref={observerTarget} />
     </div>
