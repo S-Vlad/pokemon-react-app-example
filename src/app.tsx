@@ -10,7 +10,7 @@ import NotFound from 'navigation/not-found';
 
 import './app.css';
 
-function App() {
+const App = () => {
   return (
     <>
       <SnackBarManager />
@@ -25,6 +25,6 @@ function App() {
       </main>
     </>
   );
-}
+};
 
 export default App;
