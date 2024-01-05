@@ -15,7 +15,7 @@ const useStyles = createUseStyles({
   },
 });
 
-const NotFound = () => {
+export const Component = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -28,5 +28,3 @@ const NotFound = () => {
     </PaddingWrapper>
   );
 };
-
-export default NotFound;

@@ -6,11 +6,11 @@ import { useSearchParams } from 'react-router-dom';
 import { usePokemons } from 'api/get-pokemons';
 import { PokemonShort } from 'api/types';
 import FetchOverlay from 'components/fetch-overlay';
+import PageMetaHeader from 'components/page-meta-header';
 import { QUERY_SEARCH_PARAM } from 'constants/routes';
 
 import Item from './components/item';
 import SearchBar from './components/search-bar';
-import SEO from 'components/seo';
 
 const useStyles = createUseStyles({
   mainPageCt: {
@@ -28,17 +28,16 @@ const useStyles = createUseStyles({
   },
 });
 
-const MainPage: React.FC = () => {
+export const Component: React.FC = () => {
   const classes = useStyles();
   const [searchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<PokemonShort[]>([]);
   const { data: list, isFetching } = usePokemons();
 
-  const isSearching = !isFetching && list?.results.length;
   const query = searchParams.get(QUERY_SEARCH_PARAM);
 
   useEffect(() => {
-    if (!list) {
+    if (!list || !query) {
       return;
     }
 
@@ -52,9 +51,15 @@ const MainPage: React.FC = () => {
 
   return (
     <div className={classes.mainPageCt}>
+      <PageMetaHeader
+        title={`Pokémons page`}
+        description={`Find Pokémons and familiarize yourself with their skills, abilities and other characteristics.`}
+        type='article'
+      />
+
       <SearchBar />
 
-      {isSearching ? (
+      {searchResults ? (
         <div className={classes.pokemonsCt}>
           {searchResults.map((item) => (
             <Item data={item} name={item.name} key={item.name} />
@@ -62,17 +67,9 @@ const MainPage: React.FC = () => {
         </div>
       ) : null}
 
+      {query && !searchResults.length && <Typography variant='h5'>No matching results</Typography>}
+
       <FetchOverlay isFetching={isFetching} />
-
-      {isSearching && !searchResults.length && <Typography variant='h5'>No matching results</Typography>}
-
-      <SEO
-        title={`Pokémons page`}
-        description={`Find Pokémons and familiarize yourself with their skills, abilities and other characteristics.`}
-        type='article'
-      />
     </div>
   );
 };
-
-export default MainPage;

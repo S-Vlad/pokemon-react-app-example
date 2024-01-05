@@ -5,10 +5,6 @@ import { useSearchParams } from 'react-router-dom';
 
 import { QUERY_SEARCH_PARAM } from 'constants/routes';
 
-const marginTop = 24;
-const verticalPadding = 12;
-const height = 40 + verticalPadding * 2 + marginTop;
-
 const useStyles = createUseStyles({
   searchBarCt: {
     position: 'fixed',
@@ -17,16 +13,15 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     width: '100%',
     maxWidth: 500,
-    height,
-    paddingTop: marginTop,
+    paddingTop: 24,
     backdropFilter: 'blur(5px)',
   },
   searchBar: {
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
-    paddingTop: verticalPadding,
-    paddingBottom: verticalPadding,
+    paddingTop: 12,
+    paddingBottom: 12,
     backgroundColor: '#fff',
     borderRadius: 12,
   },
@@ -69,10 +64,10 @@ const SearchBar: React.FC = () => {
     <div className={classes.searchBarCt}>
       <div className={classes.searchBar}>
         <TextField
-          label="Character name"
+          label='Character name'
           onChange={handleSearchChange}
           sx={{ width: '300px' }}
-          size="small"
+          size='small'
           defaultValue={searchParams.get(QUERY_SEARCH_PARAM)}
           autoFocus
         />

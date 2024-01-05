@@ -4,16 +4,16 @@ import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { usePokemonDetails } from 'api/get-pokemon-details';
-import NotFound from 'navigation/not-found';
+import { Component as NotFound } from 'navigation/not-found';
 
 import FetchOverlay from 'components/fetch-overlay';
 import PaddingWrapper from 'components/padding-wrapper';
-import SEO from 'components/seo';
+import PageMetaHeader from 'components/page-meta-header';
 
 import PokemonStats from './components/stats';
 import { useStyles } from './components/styles';
 
-const PokemonDetails: React.FC = () => {
+export const Component: React.FC = () => {
   const classes = useStyles();
   const { name } = useParams();
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const PokemonDetails: React.FC = () => {
   }
 
   const handleBackClick = () => navigate(-1);
-  let pokemonName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+  const pokemonName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
 
   const renderTypes = () => (
     <div className={classes.typesCt}>
@@ -48,6 +48,12 @@ const PokemonDetails: React.FC = () => {
 
   return (
     <PaddingWrapper WrapperComponent='article'>
+      <PageMetaHeader
+        title={`${pokemonName} Pokémon page`}
+        description={`This is ${pokemonName} personal page, where you can learn about Pokémon stats, abilities, and other information.`}
+        type='article'
+      />
+
       <Button onClick={handleBackClick} sx={{ position: isLessThen768 ? 'relative' : 'absolute' }}>
         Back
       </Button>
@@ -79,14 +85,6 @@ const PokemonDetails: React.FC = () => {
 
         <PokemonStats stats={data.stats} />
       </div>
-
-      <SEO
-        title={`${pokemonName} Pokémon page`}
-        description={`This is ${pokemonName} personal page, where you can learn about Pokémon stats, abilities, and other information.`}
-        type='article'
-      />
     </PaddingWrapper>
   );
 };
-
-export default PokemonDetails;
