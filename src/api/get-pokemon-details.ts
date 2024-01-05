@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
+import type { Params } from 'react-router-dom';
 
 import { PokemonResponse } from 'api/types';
 
@@ -31,9 +32,18 @@ const getPokemonDetails = async (id: string) => {
   return result;
 };
 
-export const usePokemonDetails = (name: string) =>
-  useQuery({
-    queryKey: ['pokemon', name],
-    queryFn: () => getPokemonDetails(name as string),
-    staleTime: Infinity,
-  });
+const pokemonQuery = (name: string) => ({
+  queryKey: ['pokemon', name],
+  queryFn: () => getPokemonDetails(name),
+  staleTime: Infinity,
+});
+
+export const loader =
+  (queryClient: QueryClient) =>
+  ({ params }: { params: Params<'name'> }) => {
+    const query = pokemonQuery(params.name as string);
+
+    return queryClient.ensureQueryData(query);
+  };
+
+export const usePokemonDetails = (name: string) => useQuery(pokemonQuery(name));

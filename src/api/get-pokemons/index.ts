@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
 
 import { PokemonsResponse } from 'api/types';
@@ -12,10 +12,13 @@ const getPokemons = async () => {
   return response.data;
 };
 
-export const usePokemons = () =>
-  useQuery({
-    queryKey: ['pokemon'],
-    queryFn: () => getPokemons(),
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
+const pokemonsQuery = {
+  queryKey: ['pokemon'],
+  queryFn: () => getPokemons(),
+  staleTime: Infinity,
+  gcTime: Infinity,
+};
+
+export const loader = (queryClient: QueryClient) => () => queryClient.ensureQueryData(pokemonsQuery);
+
+export const usePokemons = () => useQuery(pokemonsQuery);

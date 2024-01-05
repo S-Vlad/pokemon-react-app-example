@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const SEO: React.FC<Props> = ({ title, description, name = 'Vlad', type = 'website' }) => (
+const PageMetaHeader: React.FC<Props> = ({ title, description, name = 'Vlad', type = 'website' }) => (
   <Helmet>
     <title>{title}</title>
     <meta name='description' content={description} />
@@ -25,4 +25,4 @@ type Props = {
   type?: string;
 };
 
-export default SEO;
+export default PageMetaHeader;
